@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-
+//test
 
 typedef struct dataT{
     char nom;
@@ -48,8 +48,15 @@ dataD1 recupData(char villeRecherche){
 }
 
 pArbre ajtArbre(){
+    char* ville;
+    ville = (char *)malloc(sizeof(char) * 100);
+
+
+
     while(fgets(ligne, sizeof(ligne), fichier) != NULL){
         #mettre la ville de la ligne dans la variable ville
+        sscanf(ligne, "%*[^;];%*[^;];%[^;];", ville);
+
         if(rechercheAVL(avl, ville)!=1){
             dataT v = recupData(ville);
             if(rechercheMinAvl()<v.nbVisite){

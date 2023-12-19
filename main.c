@@ -6,7 +6,7 @@
 
 
 typedef struct dataT{
-    char* nom;
+    char nom[100];
     int nbVisite;
 }DataT;
 
@@ -26,7 +26,7 @@ DataT creationT(char* nomVille){
 }
 
 
-Chainon* recupVisiteVille(){
+Chainon* avlVilleVisite(){
     Chainon* pliste=NULL;
 
     FILE *fichier1;
@@ -43,10 +43,13 @@ Chainon* recupVisiteVille(){
         villeTemp = strtok(ligne, ";");
         DataT v=creationT(villeTemp);
         if(rechercheListe(pliste,villeTemp)==0){
-            enfile(pliste,v);
+            enfile(avl,v);
         }
         else{
-            addNbvisite(&f,villeTemp); //a faire
+            int a = recupnbvisite(villeTemp);
+            v.nbVisite++;
+            supprime(avl,villeTemp);
+            enfile(avl,v);
         }
     }
     fclose(fichier1);

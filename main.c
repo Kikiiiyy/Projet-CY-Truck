@@ -10,81 +10,93 @@ typedef struct dataT{
     int nbVisite;
 }DataT;
 
-DataT* creationT(){
-    DataT* n=malloc(sizeof(DataT));
-    if(n==NULL){
-        printf("Erreur 1");
-        exit(1);
-    }
-    n->nom=(char*)malloc(sizeof(char)*100);
-    if(n->nom==NULL){
-    	printf("Erreur 2");
-    	exit(1);
-    }
-    n->nbVisite=0;
+typedef struct chainon{
+	DataT elmt;
+	struct chainon* suivant;
+}Chainon;
+
+
+
+
+DataT creationT(char* nomVille){
+    DataT n;
+    n.nom=nomVille;
+    n.nbVisite=1;
     return n;
 }
 
 
-DataT* recupData(char* villeRecherche){
-    FILE *fichier;
-    fichier = fopen("traitementT.txt", "r");
-    if(fichier==NULL){
+Chainon* recupVisiteVille(){
+    Chainon* pliste=NULL;
+
+    FILE *fichier1;
+    fichier1 = fopen("texteT1.txt", "r");
+    if(fichier1==NULL){
         printf("Erreur : impossible d ouvrir le fichier txt.");
         exit(1);
     }
-    DataT* v=creationT();
+    
     char ligne[100];
-    char villeA[50];
-    char villeB[50];
-    int idEtape;
+    char villeTemp[50];
 
-    while(fgets(ligne, MAX_LINE_LENGTH, fichier) != NULL){
-    	/*/
-    	jsp pourquoi ca marche quand ya		villeA;villeB;idEtape
-    	mais pas
-    						idEtape;villeA,villeB
-    	/*/
-        sscanf(ligne, "%d;%49[^;];%49[^;\n]", &idEtape, villeA, villeB);
-
-        if(strcmp(villeRecherche, villeA)==0 && idEtape==1){
-             v->nbVisite++;
+    while(fgets(ligne, MAX_LINE_LENGTH, fichier1) != NULL){
+        villeTemp = strtok(ligne, ";");
+        DataT v=creationT(villeTemp);
+        if(rechercheListe(pliste,villeTemp)==0){
+            enfile(pliste,v);
         }
-        if(strcmp(villeRecherche, villeB)==0){
-            v->nbVisite++;
+        else{
+            addNbvisite(&f,villeTemp); //a faire
         }
     }
-    
-    
-    fclose(fichier);
-    return v;
-}
-
-
-pArbre ajtArbre(){
-    char* ville;
-    ville = (char *)malloc(sizeof(char) * 100);
+    fclose(fichier1);
 
 
 
-    while(fgets(ligne, sizeof(ligne), fichier) != NULL){
-        #mettre la ville de la ligne dans la variable ville
-        sscanf(ligne, "%*[^;];%*[^;];%[^;];", ville);
+    FILE *fichier2;
+    fichier2 = fopen("texteT2.txt", "r");
+    if(fichier2==NULL){
+        printf("Erreur : impossible d ouvrir le fichier txt.");
+        exit(1);
+    }
 
-        if(rechercheAVL(avl, ville)!=1){
-            dataT v = recupData(ville);
-            if(rechercheMinAvl()<v.nbVisite){
-                #ajouter dans avl v
+    while (fgets(ligne, MAX_LINE_LENGTH, fichier2) != NULL) {
+        int count = 0;
+        int i = 0;
+        int start_pos = 0;
+        int end_pos = 0;
+
+        while (ligne[i] != '\0' && ligne[i] != '\n') {
+            if (ligne[i] == ';') {
+                count++;
+                if (count == 3) {
+                    start_pos = i + 1; // Position de départ de la quatrième donnée
+                } else if (count == 4) {
+                    end_pos = i; // Position de fin de la quatrième donnée
+                    break;
+                }
+            }
+            i++;
+        }
+
+        if (count >= 4) {
+            strncpy(villeTemp, ligne + start_pos, end_pos - start_pos);
+            villeTemp[end_pos - start_pos] = '\0'; // Assure la terminaison de la chaîne
+            if(rechercheListe(villeTemp)==0){
+                ajouteListe(villeTemp);
+            }
+            else{
+                addNbvisite(villeTemp);
             }
         }
     }
+    fclose(fichier2);
+    return pListe;
 }
+
 
 
 
 int main(){
-	DataT* test=creationT();
-	test=recupData("CESTAS");
-	printf("%d\n", test->nbVisite);
 	return 0;
 }

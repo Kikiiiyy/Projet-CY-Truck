@@ -3,23 +3,15 @@
 #define MAX_LINE_LENGTH 100
 
 
-typedef struct dataT{
-    char nom[100];
-    int nbVisite;
-}DataT;
 
-typedef struct chainon{
-	DataT elmt;
-	struct chainon* suivant;
-}Chainon;
 
 
 
 
 DataT creationT(char* nomVille){
     DataT n;
-    n.nom=nomVille;
-    n.nbVisite=1;
+    strncpy(n.nom,nomVille);
+    n.nbDepart=0;
     return n;
 }
 
@@ -33,21 +25,29 @@ Chainon* avlVilleVisite(){
         printf("Erreur : impossible d ouvrir le fichier txt.");
         exit(1);
     }
-    
+
     char ligne[100];
     char villeTemp[50];
+
+
+    pAVLvisite a=NULL;
 
     while(fgets(ligne, MAX_LINE_LENGTH, fichier1) != NULL){
         villeTemp = strtok(ligne, ";");
         DataT v=creationT(villeTemp);
-        if(rechercheListe(pliste,villeTemp)==0){
-            enfile(avl,v);
+        pAVLville h;
+
+        if(rechercheVilleVisite(a,villeTemp,&h)==0){
+            if(recherche(a, 1)==0){
+                insertAVL(a,1,v);
+            }
+            else{
+                insertAVLat(a,1,v);
+            }
         }
         else{
-            int a = recupnbvisite(villeTemp);
-            v.nbVisite++;
-            supprime(avl,villeTemp);
-            enfile(avl,v);
+            v.nbDepart=h->ville.nbDepart+1;
+            deleteAVLville();
         }
     }
     fclose(fichier1);

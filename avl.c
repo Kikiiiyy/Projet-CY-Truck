@@ -266,6 +266,22 @@ pAVLvisite recherche(pAVLvisite a,int e){
 	}
 }
 
+pAVLvisite rechercheVilleVisite(pAVLvisite a,char* e){
+	if(a==NULL){
+		return NULL;
+	}
+	else if(a->nbVisite==e){
+		return rechercheVille(a->listeVille, e);
+	}
+	else if(e<a->nbVisite){
+		return rechercheVilleVisite(a->fg,e);
+	}
+	else{
+		return rechercheVilleVisite(a->fd,e);
+	}
+}
+
+
 pAVLvisite RG(pAVLvisite a){
 	if(a==NULL){
 		return a;

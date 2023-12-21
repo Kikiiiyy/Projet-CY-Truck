@@ -17,8 +17,8 @@ typedef struct AVLville{
 	DataT ville;
 
 	int eq;
-	struct AVLville * fg;
-	struct AVLville * fd;
+	struct AVLville* fg;
+	struct AVLville* fd;
 }AVLville;
 
 typedef AVLville* pAVLville;
@@ -30,8 +30,8 @@ typedef struct AVLvisite{
     pAVLville listeVille;
 
 	int eq;
-	struct AVLvisite * fg;
-	struct AVLvisite * fd;
+	struct AVLvisite* fg;
+	struct AVLvisite* fd;
 }AVLvisite;
 
 typedef AVLvisite* pAVLvisite;

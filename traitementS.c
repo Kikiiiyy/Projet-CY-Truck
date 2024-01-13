@@ -7,12 +7,6 @@
 
 //FONCTIONS UTILES
 
-int compareStr(char *mot1, char *mot2) {
-  return strcmp(mot1, mot2);
-}
-
-
-
 FILE* ouvrirFichier(char* nomFichier, char* mode) {
   FILE* fichier = fopen(nomFichier, mode);
   if(fichier==NULL){
@@ -53,7 +47,7 @@ typedef struct AVL_S {
 
 typedef AVL_S *pAVL_S;
 
-pAVL_S creationAVL_T(DataS v) {
+pAVL_S creationAVL_S(DataS v) {
   pAVL_S a = malloc(sizeof(AVL_S));
   if (a == NULL) {
     printf("Erreur 1\n");
@@ -143,10 +137,10 @@ pAVL_S equilibrerAVL_S(pAVL_S a) {
 pAVL_S ajouterAVL_S(pAVL_S a, DataS villeAjt, int *h) {
   if (a == NULL) {
     *h = 1;
-    a = creationAVL_T(villeAjt);
+    a = creationAVL_S(villeAjt);
     return a;
   }
-  //On traite le cas ou les nbVisite sont égaux
+  //On traite le cas ou les max-mini sont égaux (très peu probable mais on sait jamais)
   if ((villeAjt.maxi-villeAjt.mini) < (a->ville.maxi-a->ville.mini) || (villeAjt.maxi-villeAjt.mini) == (a->ville.maxi-a->ville.mini)) {
     a->fg = ajouterAVL_S(a->fg, villeAjt, h);
     *h = -*h;

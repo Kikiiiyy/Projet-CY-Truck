@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 if [[ -f "data.csv" ]]; then
     echo "Le fichier data.csv existe dans le répertoire de travail."
     repertoire=$(cd "$(dirname "$0")" && pwd)
@@ -10,12 +9,41 @@ if [[ -f "data.csv" ]]; then
 	    
 	    	S) # Option -S
 		    echo "Option -S spécifiée"
+# Utilisation de awk pour traiter le fichier CSV
+LC_NUMERIC=C awk -F';' '
+  # Initialisation des variables
+  BEGIN {
+    OFS=";";
+  }
+
+  # Traitement de chaque ligne
+  {
+    id = $1;              # Récupérer la valeur de la colonne 1 (ID)
+    colonne5 = $5;        # Récupérer la valeur de la colonne 5
+
+    # Mettre à jour les variables pour chaque ID
+    if (colonne5 > max_colonne5[id]) max_colonne5[id] = colonne5;
+    if (compte_colonne5[id] == 0 || colonne5 < min_colonne5[id]) min_colonne5[id] = colonne5;
+    somme_colonne5[id] += colonne5;
+    compte_colonne5[id]++;
+  }
+
+  # À la fin, afficher les résultats pour chaque ID
+  END {
+    for (id in max_colonne5) {
+      moyenne_colonne5 = somme_colonne5[id] / compte_colonne5[id];
+      printf "%s;%f;%f;%f\n", id, moyenne_colonne5, min_colonne5[id], max_colonne5[id];
+    }
+  }
+' data.csv > test.txt
+
+
 		    exit ;;
-		    
 	    	T) # Option -T
 		    echo "Option -T spécifiée"
-		    grep ";1;" data.csv |awk -F ';' '{ noms[$3]++ } END { for (nom in noms) print nom,";",noms[nom] }' > TownAstep1.txt
-		    fichier_a_deplacer="$repertoire/TownAstep1.txt"
+                    awk -F';' '!visited[$1,$3]++ { count[$3]++ } !visited[$1,$4]++ { count[$4]++ } $2 == 1 {counta[$3]++ } END { for (city in count) print city,";",count[city],";",counta[city]}' data.csv > villes_stats.txt
+                    sed -i 's/ *; */;/g' villes_stats.txt
+		    fichier_a_deplacer="$repertoire/villes_stats.txt"
 		    mv "$fichier_a_deplacer" traitement-T
 		    exit ;;
 		    
@@ -35,11 +63,11 @@ if [[ -f "data.csv" ]]; then
 		            grep ";1;" data.csv|cut -d";" -f6  | uniq -c |sort -d -k1 | cut -d" " -f7,8,9  > datatemp.csv #cut car ily a des espace en trop
 		            awk -F',' '{ count[$1]++ } END { for (word in count) print word ",", count[word] }' datatemp.csv |sort -n -r -k4|head -10| cut -d" " -f2,3,4   > DP.txt
 		            gnuplot D1.gnu
-		            convert -rotate 90 DT2.png D1.png
+		            #convert -rotate 90 DT2.png D1.png
 		            rm DP.txt
 		            rm DT2.png
-		            fichier_a_deplacer="$repertoire/D1.png"
-		    	    mv "$fichier_a_deplacer" graphique
+		            #fichier_a_deplacer="$repertoire/D1.png"
+		    	    #mv "$fichier_a_deplacer" graphique
 		            # Faites ce que vous souhaitez pour l'option -D1
 		            exit ;;
 		        2)
@@ -47,7 +75,7 @@ if [[ -f "data.csv" ]]; then
 		            awk -F';' 'NR > 1 {distance[$6] += $5} END {for (driver in distance) print distance[driver],",", driver}' data.csv | sort -nr | head -n 10  > Dtemp.txt
 		            awk -F',' 'BEGIN {OFS=","} {print $2, $1}' Dtemp.txt > D.txt
 			    gnuplot D2.gnu
-		            convert -rotate 90 DT1.png D2.png
+		            #convert -rotate 90 DT1.png D2.png
 		            rm DT1.png
 		            rm D.txt
 		            # Faites ce que vous souhaitez pour l'option -D2

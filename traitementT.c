@@ -5,6 +5,25 @@
 
 //FONCTIONS UTILES
 
+char* concatenerDonnees(const char* chaine, int entier1, int entier2) {
+    // Calculer la taille nécessaire pour la chaîne résultante
+    int tailleResultat = snprintf(NULL, 0, "%s;%d;%d\n", chaine, entier1, entier2);
+
+    // Allouer de la mémoire pour la chaîne résultante
+    char* resultat = (char*)malloc(tailleResultat + 1);
+
+    if (resultat == NULL) {
+        fprintf(stderr, "Erreur d'allocation de mémoire\n");
+        exit(1);
+    }
+
+    // Utiliser snprintf pour concaténer les données avec un retour à la ligne
+    snprintf(resultat, tailleResultat + 1, "%s;%d;%d\n", chaine, entier1, entier2);
+
+    return resultat;
+}
+
+
 int compareStr(char *mot1, char *mot2) {
   return strcmp(mot1, mot2);
 }
@@ -219,14 +238,16 @@ pAVL_T formeAVL_T() {
 
 //FONCTIONS AFFICHAGE + MEMOIRE
 
-void afficheTop10(pAVL_T a, int* c){
+void afficheTop10(pAVL_T a, int* c, FILE* file){
   if(a!=NULL){
-    afficheTop10(a->fd,c);
+    afficheTop10(a->fd,c,file);
     if(*c>0){
-    printf("%s;%d;%d\n",a->ville.nomVille, a->ville.nbVisite, a->ville.nbDepart);
+    char* ligne=concatenerDonnees(a->ville.nomVille, a->ville.nbVisite, a->ville.nbDepart);
+    fputs(ligne,file);
+    free(ligne);
       (*c)--;
     }
-    afficheTop10(a->fg,c);
+    afficheTop10(a->fg,c,file);
   }
 }
 
@@ -238,15 +259,7 @@ void parcoursPrefixe(pAVL_T a){
   }
 }
 
-void infoVille(pAVL_T a, char* villeRech){
-  if(a!=NULL){
-    if(compareStr(a->ville.nomVille, villeRech)==0){
-      printf("%s;%d;%d\n", a->ville.nomVille, a->ville.nbVisite, a->ville.nbDepart);
-    }
-    infoVille(a->fg, villeRech);
-    infoVille(a->fd, villeRech);
-  }
-}
+
 
 int compteNoeud(pAVL_T a){
   if(a==NULL){
@@ -268,7 +281,9 @@ void libererMemoireAVL(pAVL_T a) {
 void traitementT(){
   pAVL_T pa = formeAVL_T();
   int c=10;
-  afficheTop10(pa, &c);
+  FILE* suppTout = ouvrirFichier("traitementT.txt","w");
+  afficheTop10(pa, &c, suppTout);
+  fclose(suppTout);
   libererMemoireAVL(pa);
 }
 

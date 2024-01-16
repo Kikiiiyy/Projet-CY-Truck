@@ -223,7 +223,7 @@ void afficheTop10(pAVL_T a, int* c){
   if(a!=NULL){
     afficheTop10(a->fd,c);
     if(*c>0){
-    printf("%s est visité %d fois dont %d fois en départ.\n",a->ville.nomVille, a->ville.nbVisite, a->ville.nbDepart);
+    printf("%s;%d;%d\n",a->ville.nomVille, a->ville.nbVisite, a->ville.nbDepart);
       (*c)--;
     }
     afficheTop10(a->fg,c);
@@ -241,7 +241,7 @@ void parcoursPrefixe(pAVL_T a){
 void infoVille(pAVL_T a, char* villeRech){
   if(a!=NULL){
     if(compareStr(a->ville.nomVille, villeRech)==0){
-      printf("%s est visité %d fois dont %d fois en départ.\n", a->ville.nomVille, a->ville.nbVisite, a->ville.nbDepart);
+      printf("%s;%d;%d\n", a->ville.nomVille, a->ville.nbVisite, a->ville.nbDepart);
     }
     infoVille(a->fg, villeRech);
     infoVille(a->fd, villeRech);

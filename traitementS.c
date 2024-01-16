@@ -16,7 +16,23 @@ FILE* ouvrirFichier(char* nomFichier, char* mode) {
   return fichier;
 }
 
+char* concatenerDonnees(int entier1, int entier2, float float1, float float2, float float3) {
+    // Calculer la taille nécessaire pour la chaîne résultante
+    int tailleResultat = snprintf(NULL, 0, "%d;%d;%f;%f;%f\n", entier1, entier2, float1, float2, float3);
 
+    // Allouer de la mémoire pour la chaîne résultante
+    char* resultat = (char*)malloc(tailleResultat + 1);
+
+    if (resultat == NULL) {
+        fprintf(stderr, "Erreur d'allocation de mémoire\n");
+        exit(1);
+    }
+
+    // Utiliser snprintf pour concaténer les données avec un retour à la ligne
+    snprintf(resultat, tailleResultat + 1, "%d;%d;%f;%f;%f\n", entier1, entier2, float1, float2, float3);
+
+    return resultat;
+}
 
 
 //STRUCTURES ET CONSTRUCTEURS
@@ -168,7 +184,7 @@ pAVL_S ajouterAVL_S(pAVL_S a, DataS villeAjt, int *h) {
 //FONCTION PRINCIPALE
 
 pAVL_S formeAVL_S() {
-  FILE *fichier1=ouvrirFichier("resultats.txt", "r");
+  FILE *fichier1=ouvrirFichier("traitementS.txt", "r");
 
   pAVL_S avlS = NULL;
 
@@ -205,14 +221,16 @@ pAVL_S formeAVL_S() {
 
 //FONCTIONS AFFICHAGE + MEMOIRE
 
-void afficheTop50(pAVL_S a, int* c){
+void afficheTop50(pAVL_S a, int* c, FILE* file){
   if(a!=NULL){
-    afficheTop50(a->fd,c);
+    afficheTop50(a->fd,c,file);
     if(*c>0){
-    printf("%d;%f;%f;%f\n",a->ville.id, a->ville.mini, a->ville.moyenne, a->ville.maxi);
+    char* ligne=concatenerDonnees(50-(*c),a->ville.id,a->ville.moyenne,a->ville.mini,a->ville.maxi);
+    fputs(ligne,file);
+    free(ligne);
       (*c)--;
     }
-    afficheTop50(a->fg,c);
+    afficheTop50(a->fg,c,file);
   }
 }
 
@@ -231,7 +249,9 @@ void libererMemoireAVL(pAVL_S a) {
 void traitementS(){
   pAVL_S pa = formeAVL_S();
   int c=50;
-  afficheTop50(pa, &c);
+  FILE* renvoie=ouvrirFichier("traitementS.txt","w");
+  afficheTop50(pa, &c,renvoie);
+  fclose(renvoie);
   libererMemoireAVL(pa);
 }
 

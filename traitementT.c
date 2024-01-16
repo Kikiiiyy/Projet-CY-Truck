@@ -281,9 +281,9 @@ void libererMemoireAVL(pAVL_T a) {
 void traitementT(){
   pAVL_T pa = formeAVL_T();
   int c=10;
-  FILE* suppTout = ouvrirFichier("traitementT.txt","w");
-  afficheTop10(pa, &c, suppTout);
-  fclose(suppTout);
+  FILE* renvoie = ouvrirFichier("traitementT.txt","w");
+  afficheTop10(pa, &c, renvoie);
+  fclose(renvoie);
   libererMemoireAVL(pa);
 }
 

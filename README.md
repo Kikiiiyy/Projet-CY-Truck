@@ -21,6 +21,6 @@ Ensuite, pour compiler les fichiers sources, il suffit simplement d'exécuter ma
 En cas d'erreur lors de l'exécution du script Shell ou du programme C, un message d'erreur sera affiché, expliquant la raison de l'erreur.
 
 # Auteurs :
-- Antony Voisin
+- Anthony Voisin
 - Killian Harrois
 - Thomas Labbé-Nobili

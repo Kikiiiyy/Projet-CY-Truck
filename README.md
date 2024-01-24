@@ -9,11 +9,11 @@ Pour utiliser l'application, il faut faire **./Truck.sh**. Il faut ensuite ajout
 Il est possible d'utiliser **plusieurs options différentes simultanément** (par exemple : -d1 -l -t) ou (par exemple :  d1 l t), **mais il n'est pas possible d'utiliser plusieurs fois une même option** (par exemple : -d1 -l -d1).
 **Pour vous aider, vous pouvez utiliser l'option -h** qui vous montrera toutes les options possibles et comment les utiliser.
 Il y a en tout 5 différentes options : -d1, -d2, -l, -t et -s
--d1 : crée un graphique des conducteurs ayant parcouru le plus de trajets différents. Triée dans l'ordre décroissant du nombre de trajets.
--d2 : crée un graphique des conducteurs ayant parcouru la plus grande distance totale au cours des trajets.
--l : crée un graphique des 10 trajets dont la distance totale est la plus longue, triée dans l'ordre croissant des numéros d'identifiants des trajets.
--t : crée un graphique des 10 villes qui ont été le plus traversées. Avec en abscisse le nom des villes triées par ordre alphabétique et en ordonnée le nombre de trajets.
--s : crée un graphique avec 3 courbes, une pour le minimum, une autre pour le maximum et une troisième pour la moyenne, et ce pour chaque trajet en abscisse.
+- d1 : crée un graphique des conducteurs ayant parcouru le plus de trajets différents. Triée dans l'ordre décroissant du nombre de trajets.
+- d2 : crée un graphique des conducteurs ayant parcouru la plus grande distance totale au cours des trajets.
+- l : crée un graphique des 10 trajets dont la distance totale est la plus longue, triée dans l'ordre croissant des numéros d'identifiants des trajets.
+- t : crée un graphique des 10 villes qui ont été le plus traversées. Avec en abscisse le nom des villes triées par ordre alphabétique et en ordonnée le nombre de trajets.
+- s : crée un graphique avec 3 courbes, une pour le minimum, une autre pour le maximum et une troisième pour la moyenne, et ce pour chaque trajet en abscisse.
 
 Ensuite, pour compiler les fichiers sources, il suffit simplement d'exécuter make avec la cible "all". Néanmoins, le script Shell se charge de faire cette compilation lorsque c'est nécessaire.
 

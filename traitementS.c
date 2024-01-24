@@ -184,7 +184,7 @@ pAVL_S ajouterAVL_S(pAVL_S a, DataS villeAjt, int *h) {
 //FONCTION PRINCIPALE
 
 pAVL_S formeAVL_S() {
-  FILE *fichier1=ouvrirFichier("traitementS.txt", "r");
+  FILE *fichier1=ouvrirFichier("../temp/traitementS.txt", "r");
 
   pAVL_S avlS = NULL;
 
@@ -249,7 +249,7 @@ void libererMemoireAVL(pAVL_S a) {
 void traitementS(){
   pAVL_S pa = formeAVL_S();
   int c=50;
-  FILE* renvoie=ouvrirFichier("traitementS.txt","w");
+  FILE* renvoie=ouvrirFichier("../temp/traitementS.txt","w");
   afficheTop50(pa, &c,renvoie);
   fclose(renvoie);
   libererMemoireAVL(pa);

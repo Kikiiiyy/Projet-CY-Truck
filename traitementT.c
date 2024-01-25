@@ -1,10 +1,31 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "fonctions.h"
 
 
+//Fonctions utiles
+FILE* ouvrirFichier(char* nomFichier, char* mode) {
+  FILE* fichier = fopen(nomFichier, mode);
+  if(fichier==NULL){
+    printf("Erreur de l'ouverture de %s\n", nomFichier);
+    exit(1);
+  }
+  return fichier;
+}
 
-char* concatenerDonnees(const char* chaine, int entier1, int entier2) {
+int min(int a, int b) {
+  if (a <= b) {
+    return a;
+  }
+  return b;
+}
+
+int max(int a, int b) {
+  if (a <= b) {
+    return b;
+  }
+  return a;
+}
+
+char* concatenerDonneesT(const char* chaine, int entier1, int entier2) {
     // Calculer la taille nécessaire pour la chaîne résultante
     int tailleResultat = snprintf(NULL, 0, "%s;%d;%d\n", chaine, entier1, entier2);
 
@@ -23,40 +44,7 @@ char* concatenerDonnees(const char* chaine, int entier1, int entier2) {
 }
 
 
-int compareStr(char *mot1, char *mot2) {
-  return strcmp(mot1, mot2);
-}
-
-int min(int a, int b) {
-  if (a <= b) {
-    return a;
-  }
-  return b;
-}
-
-int max(int a, int b) {
-  if (a <= b) {
-    return b;
-  }
-  return a;
-}
-
-FILE* ouvrirFichier(char* nomFichier, char* mode) {
-  FILE* fichier = fopen(nomFichier, mode);
-  if(fichier==NULL){
-    printf("Erreur de l'ouverture de %s\n", nomFichier);
-    exit(1);
-  }
-  return fichier;
-}
-
-
-
-typedef struct dataT {
-  char nomVille[100];
-  int nbVisite;
-  int nbDepart;
-} DataT;
+//Fonctions constructeurs pour les structures
 
 DataT creationDataT(char *v, int vis, int dep) {
   DataT d;
@@ -65,18 +53,6 @@ DataT creationDataT(char *v, int vis, int dep) {
   d.nbDepart = dep;
   return d;
 }
-
-
-
-
-typedef struct AVL_T {
-  DataT ville;
-  int eq;
-  struct AVL_T *fg;
-  struct AVL_T *fd;
-} AVL_T;
-
-typedef AVL_T *pAVL_T;
 
 pAVL_T creationAVL_T(DataT v) {
   pAVL_T a = malloc(sizeof(AVL_T));
@@ -92,9 +68,7 @@ pAVL_T creationAVL_T(DataT v) {
 }
 
 
-
-
-//FONCTIONS AVL
+//Fonctions AVL T1
 
 pAVL_T rg_T(pAVL_T a) {
   if (a == NULL) {
@@ -193,18 +167,13 @@ pAVL_T ajouterAVL_T(pAVL_T a, DataT villeAjt, int *h) {
   return a;
 }
 
-
-
-
-//FONCTION PRINCIPALE
-
 pAVL_T formeAVL_T() {
   FILE *fichier1=ouvrirFichier("../temp/traitementT.txt", "r");
 
   pAVL_T avlT = NULL;
-  
+
   char ligne[100];
-  
+
   char villeTemp[50];
   int visTemp;
   int depTemp;
@@ -216,7 +185,7 @@ pAVL_T formeAVL_T() {
 
     token = strtok(NULL, ";");
     visTemp = atoi(token);
-    
+
     token = strtok(NULL, ";");
     if(token!=NULL){
       depTemp=atoi(token);
@@ -233,29 +202,7 @@ pAVL_T formeAVL_T() {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-typedef struct AVL_T2 {
-  DataT ville;
-  int eq;
-  struct AVL_T2 *fg;
-  struct AVL_T2 *fd;
-} AVL_T2;
-
-typedef AVL_T2 *pAVL_T2;
-
-
+//Fonctions AVL T2
 
 pAVL_T2 creationAVL_T2(DataT v) {
   pAVL_T2 a = malloc(sizeof(AVL_T2));
@@ -269,10 +216,6 @@ pAVL_T2 creationAVL_T2(DataT v) {
   a->fd = NULL;
   return a;
 }
-
-
-
-
 
 pAVL_T2 rg_T2(pAVL_T2 a) {
   if (a == NULL) {
@@ -375,64 +318,60 @@ pAVL_T2 ajouterAVL_T2(pAVL_T2 a, DataT villeAjt, int *h) {
 }
 
 
-
+//Fonction qui transfert les c premiers noeuds de AVL T1 dans AVL T2
 pAVL_T2 transfertAVL2(pAVL_T a, pAVL_T2 b, int* c){
-	if(a!=NULL){
-		b = transfertAVL2(a->fd,b,c);
-		if(*c>0){
-			int h=0;
-			b = ajouterAVL_T2(b,a->ville,&h);
-			(*c)--;
-		}
-		b = transfertAVL2(a->fg,b,c);
-	}
-	return b;
+  if(a!=NULL){
+    b = transfertAVL2(a->fd,b,c);
+    if(*c>0){
+      int h=0;
+      b = ajouterAVL_T2(b,a->ville,&h);
+      (*c)--;
+    }
+    b = transfertAVL2(a->fg,b,c);
+  }
+  return b;
 }
 
+//Fonction qui copie le top 10 dans un fichier txt
 
-
-//FONCTIONS AFFICHAGE + MEMOIRE
-
-void afficheTop10(pAVL_T2 a, FILE* file){
+void envoieTop10(pAVL_T2 a, FILE* file){
   if(a!=NULL){
-    afficheTop10(a->fd,file);
-    char* ligne=concatenerDonnees(a->ville.nomVille, a->ville.nbVisite, a->ville.nbDepart);
+    envoieTop10(a->fd,file);
+    char* ligne=concatenerDonneesT(a->ville.nomVille, a->ville.nbVisite, a->ville.nbDepart);
     fputs(ligne,file);
     free(ligne);
-    afficheTop10(a->fg,file);
+    envoieTop10(a->fg,file);
   }
 }
 
+//Fonctions qui liberent la memoire des noeuds de AVL T1 et AVL T2
 
-
-
-
-
-
-void libererMemoireAVL(pAVL_T a) {
+void libererMemoireAVLT1(pAVL_T a) {
     if (a != NULL) {
-        libererMemoireAVL(a->fg);
-        libererMemoireAVL(a->fd);
+        libererMemoireAVLT1(a->fg);
+        libererMemoireAVLT1(a->fd);
         free(a);
     }
 }
+
+void libererMemoireAVLT2(pAVL_T2 a) {
+    if (a != NULL) {
+        libererMemoireAVLT2(a->fg);
+        libererMemoireAVLT2(a->fd);
+        free(a);
+    }
+}
+
+//Fonction principale du traitement T
 
 void traitementT(){
   pAVL_T pa = formeAVL_T();
   FILE* renvoie = ouvrirFichier("../temp/traitementT.txt","w");
   int c=10;
-  pAVL_T2 pb = transfertAVL2(pa,pb, &c);
-  afficheTop10(pb, renvoie);
+  pAVL_T2 pb=NULL;
+  pb = transfertAVL2(pa,pb, &c);
+  envoieTop10(pb, renvoie);
   fclose(renvoie);
-  libererMemoireAVL(pa);
+  libererMemoireAVLT1(pa);
+  libererMemoireAVLT2(pb);
 }
-
-
-int main(){
-	traitementT();
-	return 0;
-}
-
-
-
-

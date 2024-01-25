@@ -1,12 +1,7 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "fonctions.h"
 
-#define max(a, b) (((a) > (b)) ? (a) : (b))
-#define min(a, b) (((a) < (b)) ? (a) : (b))
 
-//FONCTIONS UTILES
-
+//Fonctions utiles
 FILE* ouvrirFichier(char* nomFichier, char* mode) {
   FILE* fichier = fopen(nomFichier, mode);
   if(fichier==NULL){
@@ -16,7 +11,21 @@ FILE* ouvrirFichier(char* nomFichier, char* mode) {
   return fichier;
 }
 
-char* concatenerDonnees(int entier1, int entier2, float float1, float float2, float float3) {
+int min(int a, int b) {
+  if (a <= b) {
+    return a;
+  }
+  return b;
+}
+
+int max(int a, int b) {
+  if (a <= b) {
+    return b;
+  }
+  return a;
+}
+
+char* concatenerDonneesS(int entier1, int entier2, float float1, float float2, float float3) {
     // Calculer la taille nécessaire pour la chaîne résultante
     int tailleResultat = snprintf(NULL, 0, "%d;%d;%f;%f;%f\n", entier1, entier2, float1, float2, float3);
 
@@ -35,14 +44,7 @@ char* concatenerDonnees(int entier1, int entier2, float float1, float float2, fl
 }
 
 
-//STRUCTURES ET CONSTRUCTEURS
-
-typedef struct dataS {
-  int id;
-  float moyenne;
-  float mini;
-  float maxi;
-} DataS;
+//Fonctions constructeurs pour les structures
 
 DataS creationDataS(int id, float mo, float mi, float ma) {
   DataS d;
@@ -52,16 +54,6 @@ DataS creationDataS(int id, float mo, float mi, float ma) {
   d.maxi = ma;
   return d;
 }
-
-
-typedef struct AVL_S {
-  DataS ville;
-  int eq;
-  struct AVL_S *fg;
-  struct AVL_S *fd;
-} AVL_S;
-
-typedef AVL_S *pAVL_S;
 
 pAVL_S creationAVL_S(DataS v) {
   pAVL_S a = malloc(sizeof(AVL_S));
@@ -77,9 +69,7 @@ pAVL_S creationAVL_S(DataS v) {
 }
 
 
-
-
-//FONCTIONS AVL
+//Fonctions AVL S
 
 pAVL_S rg_S(pAVL_S a) {
   if (a == NULL) {
@@ -178,11 +168,7 @@ pAVL_S ajouterAVL_S(pAVL_S a, DataS villeAjt, int *h) {
   return a;
 }
 
-
-
-
-//FONCTION PRINCIPALE
-
+//Fonction principale pour former l'AVL S
 pAVL_S formeAVL_S() {
   FILE *fichier1=ouvrirFichier("../temp/traitementS.txt", "r");
 
@@ -208,7 +194,7 @@ pAVL_S formeAVL_S() {
 
     token = strtok(NULL, ";");
     maxTemp = atof(token);
-    
+
     int h=0;
     avlS = ajouterAVL_S(avlS, creationDataS(idTemp, moyTemp, minTemp, maxTemp), &h);
   }
@@ -217,50 +203,38 @@ pAVL_S formeAVL_S() {
 }
 
 
+//Fonction qui copie le top 50 dans un fichier txt
 
-
-//FONCTIONS AFFICHAGE + MEMOIRE
-
-void afficheTop50(pAVL_S a, int* c, FILE* file){
+void envoieTop50(pAVL_S a, int* c, FILE* file){
   if(a!=NULL){
-    afficheTop50(a->fd,c,file);
+    envoieTop50(a->fd,c,file);
     if(*c>0){
-    char* ligne=concatenerDonnees(50-(*c),a->ville.id,a->ville.moyenne,a->ville.mini,a->ville.maxi);
+    char* ligne=concatenerDonneesS(50-(*c),a->ville.id,a->ville.moyenne,a->ville.mini,a->ville.maxi);
     fputs(ligne,file);
     free(ligne);
       (*c)--;
     }
-    afficheTop50(a->fg,c,file);
+    envoieTop50(a->fg,c,file);
   }
 }
 
+//Fonction qui libere la memoire des noeuds de AVL S
 
-
-
-
-void libererMemoireAVL(pAVL_S a) {
+void libererMemoireAVLS(pAVL_S a) {
     if (a != NULL) {
-        libererMemoireAVL(a->fg);
-        libererMemoireAVL(a->fd);
+        libererMemoireAVLS(a->fg);
+        libererMemoireAVLS(a->fd);
         free(a);
     }
 }
+
+//Fonction principale du traitement S
 
 void traitementS(){
   pAVL_S pa = formeAVL_S();
   int c=50;
   FILE* renvoie=ouvrirFichier("../temp/traitementS.txt","w");
-  afficheTop50(pa, &c,renvoie);
+  envoieTop50(pa, &c,renvoie);
   fclose(renvoie);
-  libererMemoireAVL(pa);
-}
-
-
-
-
-//MAIN
-
-int main() {
-  traitementS();
-  return 0;
+  libererMemoireAVLS(pa);
 }

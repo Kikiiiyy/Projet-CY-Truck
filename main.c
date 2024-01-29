@@ -3,13 +3,15 @@
 
 int main(int argc, char *argv[]){
   char lettre=argv[1][0];
-  switch(lettre){
-    case 't':
-      traitementT();
-      break;
-    case 's':
-      traitementS();
-      break;
+  if(lettre=='t' || lettre=='T'){
+  	traitementT();
+  }
+  else if(lettre=='s' || lettre=='S'){
+  	traitementS();
+  }
+  else{
+  	printf("Erreur 1\n");
+  	exit(1);
   }
   return 0;
 }

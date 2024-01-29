@@ -1,29 +1,7 @@
 #include "fonctions.h"
 
 
-//Fonctions utiles
-FILE* ouvrirFichier(char* nomFichier, char* mode) {
-  FILE* fichier = fopen(nomFichier, mode);
-  if(fichier==NULL){
-    printf("Erreur de l'ouverture de %s\n", nomFichier);
-    exit(1);
-  }
-  return fichier;
-}
 
-int min(int a, int b) {
-  if (a <= b) {
-    return a;
-  }
-  return b;
-}
-
-int max(int a, int b) {
-  if (a <= b) {
-    return b;
-  }
-  return a;
-}
 
 char* concatenerDonneesS(int entier1, int entier2, float float1, float float2, float float3) {
     // Calculer la taille nécessaire pour la chaîne résultante
@@ -33,7 +11,7 @@ char* concatenerDonneesS(int entier1, int entier2, float float1, float float2, f
     char* resultat = (char*)malloc(tailleResultat + 1);
 
     if (resultat == NULL) {
-        fprintf(stderr, "Erreur d'allocation de mémoire\n");
+        printf("Erreur 17\n");
         exit(1);
     }
 
@@ -42,6 +20,9 @@ char* concatenerDonneesS(int entier1, int entier2, float float1, float float2, f
 
     return resultat;
 }
+
+
+
 
 
 //Fonctions constructeurs pour les structures
@@ -58,7 +39,7 @@ DataS creationDataS(int id, float mo, float mi, float ma) {
 pAVL_S creationAVL_S(DataS v) {
   pAVL_S a = malloc(sizeof(AVL_S));
   if (a == NULL) {
-    printf("Erreur 1\n");
+    printf("Erreur 18\n");
     exit(1);
   }
   a->ville = v;
@@ -180,23 +161,57 @@ pAVL_S formeAVL_S() {
   float moyTemp;
   float minTemp;
   float maxTemp;
+  int i=1;
 
 
   while (fgets(ligne, 100, fichier1) != NULL) {
     char* token=strtok(ligne, ";");
+    if(token==NULL){
+    	printf("Erreur 9 ligne %d\n",i);
+    	exit(1);
+    }
     idTemp = atoi(token);
+    if(idTemp<=0){
+    	printf("Erreur 10 ligne %d\n",i);
+    	exit(1);
+    }
 
     token = strtok(NULL, ";");
+    if(token==NULL){
+    	printf("Erreur 11 ligne %d\n",i);
+    	exit(1);
+    }
     moyTemp = atof(token);
+    if(moyTemp<=0){
+    	printf("Erreur 12 ligne %d\n",i);
+    	exit(1);
+    }
 
     token = strtok(NULL, ";");
+    if(token==NULL){
+    	printf("Erreur 13 ligne %d\n",i);
+    	exit(1);
+    }
     minTemp = atof(token);
+    if(minTemp<=0){
+    	printf("Erreur 14 ligne %d\n",i);
+    	exit(1);
+    }
 
     token = strtok(NULL, ";");
+    if(token==NULL){
+    	printf("Erreur 15 ligne %d\n",i);
+    	exit(1);
+    }
     maxTemp = atof(token);
+    if(maxTemp<=0){
+    	printf("Erreur 16 ligne %d\n",i);
+    	exit(1);
+    }
 
     int h=0;
     avlS = ajouterAVL_S(avlS, creationDataS(idTemp, moyTemp, minTemp, maxTemp), &h);
+    i++;
   }
   fclose(fichier1);
   return avlS;

@@ -5,7 +5,7 @@
 FILE* ouvrirFichier(char* nomFichier, char* mode) {
   FILE* fichier = fopen(nomFichier, mode);
   if(fichier==NULL){
-    printf("Erreur de l'ouverture de %s\n", nomFichier);
+    printf("Erreur lors de l'ouverture de %s\n", nomFichier);
     exit(1);
   }
   return fichier;
@@ -33,7 +33,7 @@ char* concatenerDonneesT(const char* chaine, int entier1, int entier2) {
     char* resultat = (char*)malloc(tailleResultat + 1);
 
     if (resultat == NULL) {
-        fprintf(stderr, "Erreur d'allocation de mémoire\n");
+        printf("Erreur 6\n");
         exit(1);
     }
 
@@ -57,7 +57,7 @@ DataT creationDataT(char *v, int vis, int dep) {
 pAVL_T creationAVL_T(DataT v) {
   pAVL_T a = malloc(sizeof(AVL_T));
   if (a == NULL) {
-    printf("Erreur 1\n");
+    printf("Erreur 7\n");
     exit(1);
   }
   a->ville = v;
@@ -177,14 +177,26 @@ pAVL_T formeAVL_T() {
   char villeTemp[50];
   int visTemp;
   int depTemp;
-
+  int i=1;
 
   while (fgets(ligne, 100, fichier1) != NULL) {
     char* token=strtok(ligne, ";");
+    if(token==NULL){
+    	printf("Erreur 2 ligne %d\n",i);
+    	exit(1);
+    }
     strcpy(villeTemp, token);
 
     token = strtok(NULL, ";");
+    if(token==NULL){
+    	printf("Erreur 3 ligne %d\n",i);
+    	exit(1);
+    }
     visTemp = atoi(token);
+    if(visTemp==0){
+    	printf("Erreur 4 ligne %d\n",i);
+    	exit(1);
+    }
 
     token = strtok(NULL, ";");
     if(token!=NULL){
@@ -195,6 +207,7 @@ pAVL_T formeAVL_T() {
     }
     int h=0;
     avlT = ajouterAVL_T(avlT, creationDataT(villeTemp, visTemp, depTemp), &h);
+    i++;
   }
   fclose(fichier1);
   return avlT;
@@ -207,7 +220,7 @@ pAVL_T formeAVL_T() {
 pAVL_T2 creationAVL_T2(DataT v) {
   pAVL_T2 a = malloc(sizeof(AVL_T2));
   if (a == NULL) {
-    printf("Erreur 1\n");
+    printf("Erreur 8\n");
     exit(1);
   }
   a->ville = v;

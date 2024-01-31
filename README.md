@@ -2,7 +2,7 @@
 Ce projet a pour objectif de créer une application qui va traiter un fichier de données de trajet pour ensuite afficher des graphiques.
 
 # Pour commencer :
-Pour utiliser ce projet, **il faut attribuer les droits de lecture et d'exécution à truck.sh** (dans la racine du projet vous pouvez faire chmod +x truck.sh). Si le répertoire data n'existe pas, créez un répertoire "data" à la racine du projet.
+Pour utiliser ce projet, **il faut attribuer les droits de lecture et d'exécution à truck.sh** (dans la racine du projet vous pouvez faire chmod +x truck.sh pour attribuer les droits). Si le répertoire data n'existe pas, créez un répertoire "data" à la racine du projet.
 
 # Utilisation :
 Pour utiliser l'application, il faut faire **./Truck.sh **.** Il faut obligatoirement mettre le chemin** du fichier CSV à étudier pour cela vous pouvez tapez la commande pwd dans la racine du projet puis y rajouter /data/data.csv .Il faut ensuite ajouter les différentes options de données souhaitées sous la forme **"-NomOption" soit " NomOption"**

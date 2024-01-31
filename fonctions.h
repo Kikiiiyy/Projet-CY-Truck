@@ -1,3 +1,6 @@
+#ifndef FONCTIONS
+#define FONCTIONS
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -41,7 +44,7 @@ typedef AVL_T2 *pAVL_T2;
 
 //fonctions T
 
-char* concatenerDonneesT(const char* chaine, int entier1, int entier2);
+char* concatenerDonneesT(char* mot, int nb1, int nb2);
 
 
 DataT creationDataT(char *v, int vis, int dep);
@@ -61,6 +64,8 @@ pAVL_T equilibrerAVL_T(pAVL_T a);
 pAVL_T ajouterAVL_T(pAVL_T a, DataT villeAjt, int *h);
 
 pAVL_T formeAVL_T();
+
+int compteNoeudsT(pAVL_T a);
 
 
 pAVL_T2 creationAVL_T2(DataT v);
@@ -111,7 +116,7 @@ typedef AVL_S *pAVL_S;
 
 //fonctions S
 
-char* concatenerDonneesS(int entier1, int entier2, float float1, float float2, float float3);
+char* concatenerDonneesS(int nb1, int nb2, float fl1, float fl2, float fl3);
 
 
 DataS creationDataS(int id, float mo, float mi, float ma);
@@ -132,9 +137,13 @@ pAVL_S ajouterAVL_S(pAVL_S a, DataS villeAjt, int *h);
 
 pAVL_S formeAVL_S();
 
+int compteNoeudsS(pAVL_S a);
+
 
 void envoieTop50(pAVL_S a, int* c, FILE* file);
 
 void libererMemoireAVLS(pAVL_S a);
 
 void traitementS();
+
+#endif

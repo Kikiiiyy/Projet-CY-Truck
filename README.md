@@ -1,8 +1,9 @@
 # CY-Truck :
-Ce projet a pour objectif de créer une application qui va traiter un fichier de données de trajet pour ensuite afficher des graphiques.
+Ce projet a pour objectif de créer un programme qui va traiter un énorme fichier de données car ces dernières sont trop volumineuses et mélangées pour être traitées par un humain. Ce programme devra analyser le contenu du fichier et ensuite générer différents types de graphiques résumant le contenu de ce fichier.
 
-# Pour commencer :
-Pour utiliser ce projet, **il faut attribuer les droits de lecture et d'exécution à truck.sh**. Si le répertoire n'existe pas, créez un répertoire "data" à la racine du projet. Il faut ensuite lancer le script en faisant **./truck.sh**.
+# Avant de commencer :
+Pour utiliser ce programme il y a quelques prérequis :
+**attribuer les droits de lecture et d'exécution à truck.sh**. Si le répertoire n'existe pas, créez un répertoire "data" à la racine du projet. Il faut ensuite lancer le script en faisant **./truck.sh**.
 
 # Utilisation :
 Pour utiliser l'application, il faut faire **./Truck.sh**. Il faut ensuite ajouter les différentes options de données souhaitées sous la forme **"-NomOption" soit " NomOption"**, puis **il faut obligatoirement mettre le chemin** du fichier CSV à étudier.

@@ -1,25 +1,30 @@
 #include "fonctions.h"
 
 
+//DANS CE FICHIER ON NE DEFINI PAS LES FONCTIONS : ouvrirFichier / min / max CAR ELLES SONT DEJA DANS traitementT.c ET RELIES AVEC LE HEADER fonctions.h
 
 
-char* concatenerDonneesS(int entier1, int entier2, float float1, float float2, float float3) {
-    // Calculer la taille nécessaire pour la chaîne résultante
-    int tailleResultat = snprintf(NULL, 0, "%d;%d;%f;%f;%f\n", entier1, entier2, float1, float2, float3);
+//Renvoie un pointeur vers une string qui est la concaténation de 2 entiers et de 3 floats, séparés par des ';'
+char* concatenerDonneesS(int nb1, int nb2, float fl1, float fl2, float fl3) {
 
-    // Allouer de la mémoire pour la chaîne résultante
-    char* resultat = (char*)malloc(tailleResultat + 1);
+    //On calcule la taille qu'il va falloir pour la concatenation
+    int tailleConcat = snprintf(NULL, 0, "%d;%d;%f;%f;%f\n", nb1, nb2, fl1, fl2, fl3);
 
-    if (resultat == NULL) {
+    //Allocation mémoire pour la concatenation
+    char* concatenation = (char*)malloc(tailleConcat + 1);
+
+    if (concatenation == NULL) {
         printf("Erreur 17\n");
         exit(1);
     }
 
-    // Utiliser snprintf pour concaténer les données avec un retour à la ligne
-    snprintf(resultat, tailleResultat + 1, "%d;%d;%f;%f;%f\n", entier1, entier2, float1, float2, float3);
-
-    return resultat;
+    //On sépare tout par des ';' et on met dans concatenation
+    snprintf(concatenation, tailleConcat + 1, "%d;%d;%f;%f;%f\n", nb1, nb2, fl1, fl2, fl3);
+    return concatenation;
 }
+
+
+
 
 
 
@@ -48,6 +53,9 @@ pAVL_S creationAVL_S(DataS v) {
   a->fd = NULL;
   return a;
 }
+
+
+
 
 
 //Fonctions AVL S
@@ -127,7 +135,7 @@ pAVL_S ajouterAVL_S(pAVL_S a, DataS villeAjt, int *h) {
     a = creationAVL_S(villeAjt);
     return a;
   }
-  //On traite le cas ou les max-mini sont égaux (très peu probable mais on sait jamais)
+  //ATTENTION : On traite le cas ou les max-mini sont égaux (très peu probable mais on sait jamais)
   if ((villeAjt.maxi-villeAjt.mini) < (a->ville.maxi-a->ville.mini) || (villeAjt.maxi-villeAjt.mini) == (a->ville.maxi-a->ville.mini)) {
     a->fg = ajouterAVL_S(a->fg, villeAjt, h);
     *h = -*h;
@@ -149,7 +157,10 @@ pAVL_S ajouterAVL_S(pAVL_S a, DataS villeAjt, int *h) {
   return a;
 }
 
-//Fonction principale pour former l'AVL S
+
+
+
+//Forme l'AVL
 pAVL_S formeAVL_S() {
   FILE *fichier1=ouvrirFichier("../temp/traitementS.txt", "r");
 
@@ -157,83 +168,107 @@ pAVL_S formeAVL_S() {
 
   char ligne[100];
 
+  //Variables dans lesquelles on va stocker les différentes données de chaque ligne pour les envoyer dans l'AVL
   int idTemp;
   float moyTemp;
   float minTemp;
   float maxTemp;
-  int i=1;
+  
+  //Compteur de ligne pour indiquer la ligne ou il y a une erreur
+  int ctLigne=1;
 
-
+  //On parcourt chaque ligne du fichier txt envoyé par le shell pour récupérer et envoyer les données dans l'AVL
   while (fgets(ligne, 100, fichier1) != NULL) {
-    char* token=strtok(ligne, ";");
-    if(token==NULL){
-    	printf("Erreur 9 ligne %d\n",i);
+    //On va recupérer les différents elements de la ligne et les mettre dans eltLigne
+    
+    //On stocke l'id de la ligne
+    char* eltLigne=strtok(ligne, ";");
+    if(eltLigne==NULL){
+    	printf("Erreur 9 ligne %d\n",ctLigne);
     	exit(1);
     }
-    idTemp = atoi(token);
+    idTemp = atoi(eltLigne);
     if(idTemp<=0){
-    	printf("Erreur 10 ligne %d\n",i);
+    	printf("Erreur 10 ligne %d\n",ctLigne);
     	exit(1);
     }
 
-    token = strtok(NULL, ";");
-    if(token==NULL){
-    	printf("Erreur 11 ligne %d\n",i);
+    //On stocke la moyenne de la ligne
+    eltLigne = strtok(NULL, ";");
+    if(eltLigne==NULL){
+    	printf("Erreur 11 ligne %d\n",ctLigne);
     	exit(1);
     }
-    moyTemp = atof(token);
+    moyTemp = atof(eltLigne);
     if(moyTemp<=0){
-    	printf("Erreur 12 ligne %d\n",i);
+    	printf("Erreur 12 ligne %d\n",ctLigne);
     	exit(1);
     }
 
-    token = strtok(NULL, ";");
-    if(token==NULL){
-    	printf("Erreur 13 ligne %d\n",i);
+    //On stocke le min de la ligne
+    eltLigne = strtok(NULL, ";");
+    if(eltLigne==NULL){
+    	printf("Erreur 13 ligne %d\n",ctLigne);
     	exit(1);
     }
-    minTemp = atof(token);
+    minTemp = atof(eltLigne);
     if(minTemp<=0){
-    	printf("Erreur 14 ligne %d\n",i);
+    	printf("Erreur 14 ligne %d\n",ctLigne);
     	exit(1);
     }
 
-    token = strtok(NULL, ";");
-    if(token==NULL){
-    	printf("Erreur 15 ligne %d\n",i);
+    //On stocke le max de la ligne
+    eltLigne = strtok(NULL, ";");
+    if(eltLigne==NULL){
+    	printf("Erreur 15 ligne %d\n",ctLigne);
     	exit(1);
     }
-    maxTemp = atof(token);
+    maxTemp = atof(eltLigne);
     if(maxTemp<=0){
-    	printf("Erreur 16 ligne %d\n",i);
+    	printf("Erreur 16 ligne %d\n",ctLigne);
     	exit(1);
     }
 
     int h=0;
+    
+    //On ajoute tout ce qu'on a récupéré dans un noeud dans l'AVL
     avlS = ajouterAVL_S(avlS, creationDataS(idTemp, moyTemp, minTemp, maxTemp), &h);
-    i++;
+    ctLigne++;
   }
   fclose(fichier1);
   return avlS;
 }
 
+//Renvoie le nombre de noeuds dans l'AVL (utile pour afficher le nombre de noeuds dans l'erreur 20)
+int compteNoeudsS(pAVL_S a){
+	if(a!=NULL){
+		return 1+compteNoeudsS(a->fg)+compteNoeudsS(a->fd);
+	}
+	return 0;
+}
 
-//Fonction qui copie le top 50 dans un fichier txt
 
+//Copie le top 50 dans un fichier txt, on fait un parcours infixe inversé et à l'aide de concatenerDonneesS on copie les infos dans le fichier destination
 void envoieTop50(pAVL_S a, int* c, FILE* file){
   if(a!=NULL){
     envoieTop50(a->fd,c,file);
+    //si c>0 ça veut dire qu'il reste de la place pour le top 50 et donc ...
     if(*c>0){
-    char* ligne=concatenerDonneesS(50-(*c),a->ville.id,a->ville.moyenne,a->ville.mini,a->ville.maxi);
-    fputs(ligne,file);
-    free(ligne);
+      //... on créer la ligne qu'il faut envoyer avec concatenerDonneesS et ...
+      char* ligne=concatenerDonneesS(50-(*c),a->ville.id,a->ville.moyenne,a->ville.mini,a->ville.maxi);
+      //... on les copie dans le fichier destination (et on oublie pas de free la ligne)
+      fputs(ligne,file);
+      free(ligne);
       (*c)--;
     }
     envoieTop50(a->fg,c,file);
   }
 }
 
-//Fonction qui libere la memoire des noeuds de AVL S
+
+
+
+//Fonction qui libere la memoire des noeuds de l'AVL
 
 void libererMemoireAVLS(pAVL_S a) {
     if (a != NULL) {
@@ -243,13 +278,26 @@ void libererMemoireAVLS(pAVL_S a) {
     }
 }
 
-//Fonction principale du traitement S
-
+/*/Fonction principale du traitement S
+1. On forme l'AVL qui sera la liste de tous les Route ID différents, triées par etapeMax - etapeMin
+2. On met dans un pointeur l'adresse du fichier ou on veut renvoyer les infos (dans notre cas on utilise le même fichier que le shell nous as envoyé pour éviter d'avoir a en recréer un)
+3. On copie les 50 premières valeurs de l'AVL dans le fichier traitementS.txt
+4. On libère tous les noeuds de l'AVL
+/*/
 void traitementS(){
+  //1.
   pAVL_S pa = formeAVL_S();
+  int nbNoeuds=compteNoeudsS(pa);
+  if(nbNoeuds<50){
+  	printf("Erreur 20\nIl y a %d villes dans data.csv or ce traitement doit afficher 50 villes.\n",nbNoeuds);
+  	exit(1);
+  }
   int c=50;
+  //2.
   FILE* renvoie=ouvrirFichier("../temp/traitementS.txt","w");
+  //3.
   envoieTop50(pa, &c,renvoie);
   fclose(renvoie);
+  //4.
   libererMemoireAVLS(pa);
 }

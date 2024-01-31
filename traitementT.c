@@ -2,6 +2,8 @@
 
 
 //Fonctions utiles
+
+//Renvoie un pointeur vers le fichier qu'on souhaite ouvrir avec un mode précisé
 FILE* ouvrirFichier(char* nomFichier, char* mode) {
   FILE* fichier = fopen(nomFichier, mode);
   if(fichier==NULL){
@@ -25,23 +27,26 @@ int max(int a, int b) {
   return a;
 }
 
-char* concatenerDonneesT(const char* chaine, int entier1, int entier2) {
-    // Calculer la taille nécessaire pour la chaîne résultante
-    int tailleResultat = snprintf(NULL, 0, "%s;%d;%d\n", chaine, entier1, entier2);
+//Renvoie un pointeur vers une string qui est la concaténation d'une string et 2 entiers, séparés par des ';'
+char* concatenerDonneesT(char* mot, int nb1, int nb2) {
+    
+    //On calcule la taille qu'il va falloir pour la concatenation
+    int tailleConcat = snprintf(NULL, 0, "%s;%d;%d\n", mot, nb1, nb2);
 
-    // Allouer de la mémoire pour la chaîne résultante
-    char* resultat = (char*)malloc(tailleResultat + 1);
-
-    if (resultat == NULL) {
+    //Allocation mémoire pour la concatenation
+    char* concatenation = (char*)malloc(tailleConcat + 1);
+    if (concatenation == NULL) {
         printf("Erreur 6\n");
         exit(1);
     }
-
-    // Utiliser snprintf pour concaténer les données avec un retour à la ligne
-    snprintf(resultat, tailleResultat + 1, "%s;%d;%d\n", chaine, entier1, entier2);
-
-    return resultat;
+    
+    //On sépare tout par des ';' et on met dans concatenation
+    snprintf(concatenation, tailleConcat + 1, "%s;%d;%d\n", mot, nb1, nb2);
+    return concatenation;
 }
+
+
+
 
 
 //Fonctions constructeurs pour les structures
@@ -66,6 +71,9 @@ pAVL_T creationAVL_T(DataT v) {
   a->fd = NULL;
   return a;
 }
+
+
+
 
 
 //Fonctions AVL T1
@@ -139,13 +147,14 @@ pAVL_T equilibrerAVL_T(pAVL_T a) {
   return a;
 }
 
+//Dans le 1er AVL, on trie en fonction de nbVisite
 pAVL_T ajouterAVL_T(pAVL_T a, DataT villeAjt, int *h) {
   if (a == NULL) {
     *h = 1;
     a = creationAVL_T(villeAjt);
     return a;
   }
-  //On traite le cas ou les nbVisite sont égaux
+  //ATTENTION : On traite aussi le cas ou les nbVisite sont égaux (si c'est le cas, on peut envoyer soit dans le fd soit dans le fg, dans notre cas on envoie dans le fg)
   if (villeAjt.nbVisite < a->ville.nbVisite || villeAjt.nbVisite==a->ville.nbVisite) {
     a->fg = ajouterAVL_T(a->fg, villeAjt, h);
     *h = -*h;
@@ -167,51 +176,73 @@ pAVL_T ajouterAVL_T(pAVL_T a, DataT villeAjt, int *h) {
   return a;
 }
 
+//Forme le 1er AVL,
 pAVL_T formeAVL_T() {
   FILE *fichier1=ouvrirFichier("../temp/traitementT.txt", "r");
-
   pAVL_T avlT = NULL;
 
   char ligne[100];
-
+  
+  //Variables dans lesquelles on va stocker les différentes données de chaque ligne pour les envoyer dans l'AVL
   char villeTemp[50];
   int visTemp;
   int depTemp;
-  int i=1;
+  
+  //Compteur de ligne pour indiquer la ligne ou il y a une erreur
+  int ctLigne=1;
 
+  //On parcourt chaque ligne du fichier txt envoyé par le shell pour récupérer et envoyer les données dans le 1er AVL
   while (fgets(ligne, 100, fichier1) != NULL) {
-    char* token=strtok(ligne, ";");
-    if(token==NULL){
-    	printf("Erreur 2 ligne %d\n",i);
+    //On va recupérer les différents elements de la ligne et les mettre dans eltLigne
+    
+    //On stocke le nom de la ville de la ligne
+    char* eltLigne=strtok(ligne, ";");
+    if(eltLigne==NULL){
+    	printf("Erreur 2 ligne %d\n",ctLigne);
     	exit(1);
     }
-    strcpy(villeTemp, token);
+    strcpy(villeTemp, eltLigne);
 
-    token = strtok(NULL, ";");
-    if(token==NULL){
-    	printf("Erreur 3 ligne %d\n",i);
+    //On stocke le nombre "visite" de la ligne
+    eltLigne = strtok(NULL, ";");
+    if(eltLigne==NULL){
+    	printf("Erreur 3 ligne %d\n",ctLigne);
     	exit(1);
     }
-    visTemp = atoi(token);
+    visTemp = atoi(eltLigne);
     if(visTemp==0){
-    	printf("Erreur 4 ligne %d\n",i);
+    	printf("Erreur 4 ligne %d\n",ctLigne);
     	exit(1);
     }
 
-    token = strtok(NULL, ";");
-    if(token!=NULL){
-      depTemp=atoi(token);
+    //On stocke le nombre "départ" de la ligne
+    eltLigne = strtok(NULL, ";");
+    if(eltLigne!=NULL){
+      depTemp=atoi(eltLigne);
     }
     else{
       depTemp=0;
     }
     int h=0;
+    
+    //On ajoute tout ce qu'on a récupéré dans un noeud dans l'AVL
     avlT = ajouterAVL_T(avlT, creationDataT(villeTemp, visTemp, depTemp), &h);
-    i++;
+    ctLigne++;
   }
   fclose(fichier1);
   return avlT;
 }
+
+//Renvoie le nombre de noeuds dans l'AVL (utile pour afficher le nombre de noeuds dans l'erreur 19)
+int compteNoeudsT(pAVL_T a){
+	if(a!=NULL){
+		return 1+compteNoeudsT(a->fg)+compteNoeudsT(a->fd);
+	}
+	return 0;
+}
+
+
+
 
 
 
@@ -308,7 +339,7 @@ pAVL_T2 ajouterAVL_T2(pAVL_T2 a, DataT villeAjt, int *h) {
     a = creationAVL_T2(villeAjt);
     return a;
   }
-  //On traite le cas ou les nbVisite sont égaux
+  //ATTENTION : On traite aussi le cas ou les villes ont le meme nom, c'est à dire si strcmp == 0 (impossible mais on sait jamais)
   if(strcmp(villeAjt.nomVille,a->ville.nomVille)>=0){
     a->fg = ajouterAVL_T2(a->fg, villeAjt, h);
     *h = -*h;
@@ -331,10 +362,11 @@ pAVL_T2 ajouterAVL_T2(pAVL_T2 a, DataT villeAjt, int *h) {
 }
 
 
-//Fonction qui transfert les c premiers noeuds de AVL T1 dans AVL T2
+//Transfert les c premiers noeuds de AVL T1 dans AVL T2, on fait un parcours infixe inversé et si c>0 on ajoute la ville de ce noeud dans AVL T2
 pAVL_T2 transfertAVL2(pAVL_T a, pAVL_T2 b, int* c){
   if(a!=NULL){
     b = transfertAVL2(a->fd,b,c);
+    //Si c>0 on ajoute la ville de ce noeud dans l'AVL T2
     if(*c>0){
       int h=0;
       b = ajouterAVL_T2(b,a->ville,&h);
@@ -345,19 +377,23 @@ pAVL_T2 transfertAVL2(pAVL_T a, pAVL_T2 b, int* c){
   return b;
 }
 
-//Fonction qui copie le top 10 dans un fichier txt
-
-void envoieTop10(pAVL_T2 a, FILE* file){
+//Copie le top 10 dans un fichier txt, on fait un parcours infixe inversé et à l'aide de concatenerDonneesT on copie les infos dans le fichier destination
+void envoieTop10(pAVL_T2 a, FILE* destination){
   if(a!=NULL){
-    envoieTop10(a->fd,file);
+    envoieTop10(a->fd,destination);
+    //On créer la ligne qu'il faut envoyer avec concatenerDonneesT et ...
     char* ligne=concatenerDonneesT(a->ville.nomVille, a->ville.nbVisite, a->ville.nbDepart);
-    fputs(ligne,file);
+    //... on les copie dans le fichier destination (et on oublie pas de free la ligne)
+    fputs(ligne,destination);
     free(ligne);
-    envoieTop10(a->fg,file);
+    envoieTop10(a->fg,destination);
   }
 }
 
-//Fonctions qui liberent la memoire des noeuds de AVL T1 et AVL T2
+
+
+
+//Fonctions qui liberent la memoire des noeuds de AVL T1 et AVL T2 (tout simplement des parcours postfixe ou on libère les 2 fils et ensuite on libère la racine)
 
 void libererMemoireAVLT1(pAVL_T a) {
     if (a != NULL) {
@@ -375,16 +411,33 @@ void libererMemoireAVLT2(pAVL_T2 a) {
     }
 }
 
-//Fonction principale du traitement T
 
+
+/*/Fonction principale du traitement T
+1. On forme le 1er AVL qui sera la liste de toutes les villes triées par nombre de visite
+2. On met dans un pointeur l'adresse du fichier ou on veut renvoyer les infos (dans notre cas on utilise le même fichier que le shell nous as envoyé pour éviter d'avoir a en recréer un)
+3. On transfere les 10 premiers noeuds du 1er AVL dans le 2eme AVL qui lui est trié par ordre alphabétique
+4. On copie les 10 valeurs du 2eme AVL dans le fichier traitementT.txt
+5. On libère tous les noeuds des 2 AVL
+/*/
 void traitementT(){
+  //1.
   pAVL_T pa = formeAVL_T();
+  int nbNoeuds=compteNoeudsT(pa);
+  if(nbNoeuds<10){
+  	printf("Erreur 19\nIl y a %d villes dans data.csv or ce traitement doit afficher les 10 villes les plus visitées.\n",nbNoeuds);
+  	exit(1);
+  }
+  //2.
   FILE* renvoie = ouvrirFichier("../temp/traitementT.txt","w");
+  //3.
   int c=10;
   pAVL_T2 pb=NULL;
   pb = transfertAVL2(pa,pb, &c);
+  //4.
   envoieTop10(pb, renvoie);
   fclose(renvoie);
+  //5.
   libererMemoireAVLT1(pa);
   libererMemoireAVLT2(pb);
 }

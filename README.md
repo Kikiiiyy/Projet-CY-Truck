@@ -17,7 +17,7 @@ Il y a en tout 5 différentes options :
 
 Ensuite, pour compiler les fichiers sources, il suffit simplement d'exécuter make. Néanmoins, le script Shell se charge de faire cette compilation lorsque c'est nécessaire.
 
-Finalement apres l'execution du projet tout les graphiques demander seront placé dans le dossier images, le dossier demo quand a lui contiendra tout les fichier txt utiliser et se remplira des graphique une fois que celui dans le dossier images sera remplacer par un autre apres l'execution de notre programe.
+Finallement apres l'execution du projet tout les graphiques demandés seront placés dans le dossier images, le dossier demo quand à lui contiendra tous les fichiers txt utilisés et se remplira des anciens graphiques une fois que les nouveaux graphiques auront été générés dans le dossier images.
 
 # Erreur d'exécution
 En cas d'erreur lors de l'exécution du script Shell ou du programme C, un message d'erreur sera affiché, expliquant la raison de l'erreur.

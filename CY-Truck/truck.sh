@@ -219,11 +219,11 @@ echo "Option -D2 spécifiée"
 for arg in "$@"; do
     if [ "$arg" == "-h" ]|| [ "$arg" == "h" ]; then
     	affichage_erreur
-        echo "-d1 : affiche un graphique des conducteurs ayant effectué le plus grand nombre de trajets différents."
+        echo "-d1 : affiche un graphique des conducteurs ayant effectué le plus grand nombre de trajets différents. Trié dans l'ordre décroissant du nombre de trajets."
         echo "-d2 : affiche un graphique des conducteurs ayant parcouru la plus grande distance totale au cours de tous ses trajets."
-        echo "-l : affiche un graphique des 10 plus longs trajets."
-        echo "-t : affiche un graphique des 10 villes qui ont été les plus traversées, tous trajets confondus. Et affiche le nombre de fois que ces villes ont été ville de départ."
-        echo "-s : affiche un graphique des 50 trajets qui ont le plus grand écart entre les distances de leur plus longue et plus courte etape. Affiche la plus longue, la plus courte étape et la moyenne des distance des étapes pour ces trajets."
+        echo "-l : affiche un graphique des 10 plus longs trajets, triés dans l'ordre croissant des numéros d'identifiants des trajets."
+        echo "-t : affiche un graphique des 10 villes qui ont été les plus traversées, tous trajets confondus. Avec en abscisse le nom des villes triées par ordre alphabétique et en ordonnée le nombre de trajets."
+        echo "-s : affiche un graphique des 50 trajets qui ont le plus grand écart entre la distance minimale d une etape du trajet et la distance maximale d une autre etape de ce meme trajet,avec 3 courbes, une pour la distance minimum, une autre pour la maximum et une troisième pour la moyenne de toutes les etapes du trajet."
         exit 1
     fi
 done
@@ -325,6 +325,7 @@ for arg in "$@"; do
 		        echo " "
 		        
 		    fi
+	else
 		echo "Option invalide. Utilisez -h pour afficher les options disponibles."
 		echo " "
 		affichage_erreur

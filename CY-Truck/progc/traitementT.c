@@ -335,7 +335,7 @@ pAVL_T2 equilibrerAVL_T2(pAVL_T2 a) {
 	return a;
 }
 
-pAVL_T2 ajouterAVL_T2(pAVL_T2 a, DataT villeAjt, int *h) {cteurs ayant réalisé le plus de trajets différents. - d2 : crée un graphique des conducteurs ayant parcouru la plus grande distance totale au cours des trajets. - l : crée un graphique des 10 trajets dont la distance totale est la plus l
+pAVL_T2 ajouterAVL_T2(pAVL_T2 a, DataT villeAjt, int *h){
 	if (a == NULL) {
 		*h = 1;
 		a = creationAVL_T2(villeAjt);
